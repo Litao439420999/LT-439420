@@ -1,0 +1,127 @@
+一，fscanf和fprintf（格式化读写函数)
+
+fscanf函数的使用格式如下：
+fscanf(文件类型指针，格式字符串，输入项地址表列);
+fscanf函数的功能是：按“格式字符串”所指定的格式，从“文件类型指针”所指向的文件的当前位置读取数据，然后按“输入项地址表列”的顺序，将读取来的数据存入指定的内存单元中。
+fscanf函数的返回值是读取的数据个数；若遇见文件结束符或读取不成功，则fscanf函数返回EOF（-1）。 
+例如：
+          fscanf（fp，“%d，%f”，&i，&t）；
+          
+表示从fp所指向的文件中，按“%d，%f”规定的格式读取两个值，将这两个值分别存储在地址&i和&t对应的内存单元中。若读取成功，fscanf函数的返回值是2。
+
+前面几章经常使用的函数：
+     scanf(格式字符串，输入项地址表列) ；
+与 fscanf(stdin，格式字符串，输入项地址表列) ；
+功能相同，这里的stdin代表标准输入文件（如键盘）。
+这两种形式的作用都是从终端（如键盘），按“格式字符串”的格式输入（读取）数据，将输入（读取）的数据存入“输入项地址表列”指定的内存单元中。
+
+2.fprintf
+fprintf函数的使用格式如下：
+     fprintf(文件类型指针，格式字符串，输出项表列);
+ fprintf函数的功能是：按“格式字符串”所指定的格式，将“输出项表列”中指定的各项的值写入“文件类型指针”所指向的文件的当前位置。若写入成功，fprintf函数的返回值是写入文件中的字符个数（或字节个数），否则返回EOF（-1）。
+例如：
+         fprintf（fp，“%d，%f”， i，t）；
+表示按“%d，%f”规定的格式，在fp所指向的文件中，从文件的当前位置开始，将i和t的值写入文件中。
+前面几章经常使用的函数：
+ printf(格式字符串，输出项表列) ；
+与 fprintf(stdout，格式字符串，输出项表列) ；
+功能相同，这里的stdout代表标准输出文件（如显示器）。这两种形式的作用都是向终端（如显示器）按“格式字符串”的格式输出（写入）数据。
+
+
+举例一：
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct stu
+{
+	char name[20];
+	int  num;
+	int  age;
+}S;
+
+int main()
+{
+	S st,*p;
+	FILE  *fp;
+	char na[20];
+	int n ,a;
+	
+	//输入st数据 
+	printf("学生st数据:\n");
+	printf("姓名:");scanf("%s",st.name);
+	printf("学号/年龄:");scanf("%d%d",&st.num,&st.age);
+	
+	//写入文件
+	fp = fopen("D:\\do.txt","wb+");
+	if(fp==NULL)
+	{
+		printf("文件没有打开！\n");exit(0);
+	 }
+	 else  //写入文件 
+	 {
+	 	fprintf(fp,"%s %d %d",st.name,st.num,st.age);
+	 	printf("已成功写入文件!\n");
+	  } 
+	  
+	  //从文件读取数据
+	  rewind(fp); //返回文件开始位置
+
+	  fscanf(fp,"%s %d %d",na,&n,&a);
+	  
+	  	printf("文件已读取!\n");
+	  	printf("na=%s\tn=%d\ta=%d\n",na,n,a);
+	 
+	   
+	   fclose(fp);
+	   return 0;
+	  
+}
+
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct stu
+{
+	char name[20];
+	int  num;
+	int  age;
+}S;
+
+int main()
+{
+	  S st[3],sd[3],*p;
+  	FILE  *fp;
+  	int i;
+	
+   for(i=0;i<3;i++)
+   {
+	    printf("学生st数据:\n");
+     	printf("姓名:");scanf("%s",st[i].name);
+	    printf("学号/年龄:");scanf("%d%d",&st[i].num,&st[i].age);
+	}
+	
+  	p = st;
+	  fp = fopen("D:\\der.txt","w+");
+	  if(fp==NULL) {	 	printf("文件没有打开\n");exit(0);	 }
+	  else
+	    {
+	      	for(i=0;i<3;i++,p++)
+	    	 {
+	 	     	fprintf(fp,"%s %d %d",p->name,p->num,p->age);
+		     }
+		      printf("已成功写入文件!\n");
+	   }
+	 
+	 rewind(fp);
+	 //读取文件
+	 for(i=0;i<3;i++)
+	 {	 	
+     fscanf(fp,"%s %d %d",sd[i].name,&sd[i].num,&sd[i].age); 	
+	 }
+   
+	  p =sd;
+	  for(;p<sd+3;p++)
+	  printf("姓名:%s\t学号:%d\t年龄:%d\n",p->name,p->num,p->age);
+	  return 0;
+	  
+}
+
